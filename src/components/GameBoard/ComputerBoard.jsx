@@ -1,14 +1,18 @@
 import PropTypes from 'prop-types';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef } from 'react';
 import GameContext from '../../hooks/GameContext';
+import { findNextCell } from '../../utils/gameHelper';
+import { shipList } from '../../utils/gameData';
 import { StyledBoard, LayerBoard } from "./BoardTemplates";
 
 function ComputerBoard({ name, size }) {
     const { playerBoard, setPlayerBoard, computerBoard, setComputerBoard, compShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch } = useContext(GameContext);
 
-    const [nextShot, setNextShot] = useState(null);
-    const [curFilteredShots, setCurFilteredShot] = useState([]);
-    const [shotArray, setShotArray] = useState([]);
+    const hitArrayRef = useRef(null);
+    const sunkArrayRef = useRef(null);
+    const missArrayRef = useRef(null);
+    const prevSunkArrayRef = useRef(null);
+    const curShotRef = useRef(null);
 
 
     const iniBoard = () => {
@@ -17,14 +21,16 @@ function ComputerBoard({ name, size }) {
     }
 
     useEffect(() => {
-        iniBoard()
-
+        iniBoard();
+        hitArrayRef.current = [];
+        sunkArrayRef.current = [];
+        prevSunkArrayRef.current = [];
+        missArrayRef.current = [];
     }, [])
 
     useEffect(() => {
         if (gameState.playerHp === 0 || gameState.computerHp === 0) {
             gameDispatch({ type: 'GAME_ENDED' })
-
         }
     }, [gameState.playerHp, gameState.computerHp])
 
@@ -33,51 +39,11 @@ function ComputerBoard({ name, size }) {
         if (gameState.gameEnded) {
             return null;
         }
-
-        /* ------------------------------------------ */
         //* Player's target cell
         const targetClass = e.target.classList[0];
         const targetCellIndex = Number(targetClass.slice(7, targetClass.length));
         const clickedCell = computerBoard[targetCellIndex - 1];
-        /* ------------------------------------------ */
-        let prevPlayerInventory = gameState.playerInventory;
-        let curShot;
-        let availablePlayerCells;
-        availablePlayerCells = playerBoard.filter((cell) => cell.isHit === false);
-        const randomCell = randomize(availablePlayerCells);
-
-
-        const shotFilter = (targetCell, availArr) => {
-            let nextShotArr = [];
-            if (targetCell && availArr.length !== 0) {
-
-                for (let i = 0; i < availArr.length; i += 1) {
-                    if (availArr[i].y === targetCell.y) {
-                        if (availArr[i].x === targetCell.x + 1 || availArr[i].x === targetCell.x - 1) {
-                            nextShotArr.push(availArr[i])
-                        }
-                    } else if (availArr[i].x === targetCell.x) {
-                        if (availArr[i].y === targetCell.y + 1 || availArr[i].y === targetCell.y - 1) {
-                            nextShotArr.push(availArr[i])
-                        }
-                    }
-
-                }
-            } else {
-                console.log(`Fuck this ${targetCell}`)
-            }
-            return nextShotArr
-        }
-
-        //* Initial cell setup
-
-        if (!nextShot) {
-            curShot = randomCell;
-        }
-
-        /* ---------------------------------------------- */
         //* BOARD VISUALIZATION 
-
         setComputerBoard((compBoard) => {
             const newCompBoard = compBoard.map((cell) => {
                 if (cell === clickedCell) {
@@ -87,11 +53,28 @@ function ComputerBoard({ name, size }) {
             });
             return newCompBoard;
         });
+        //* Dispatching actions
+        const shootAIAction = {
+            type: 'SHOOT_AI',
+            payload: { clickedCell }
+        }
 
+        gameDispatch(shootAIAction);
+    }
 
+    const handleAI = () => {
+        //* Initial computer's target cell setup
+        let availablePlayerCells = playerBoard.filter((cell) => cell.isHit === false);
+        const randomCell = randomize(availablePlayerCells);
+        if (!curShotRef.current) {
+            curShotRef.current = randomCell;
+        }
+        const curShotValue = curShotRef.current;
+
+        //Board visual + dispatch action
         setPlayerBoard((playerBoard) => {
             const newPlayerBoard = playerBoard.map((cell) => {
-                if (cell === curShot) {
+                if (cell === curShotValue) {
                     return { ...cell, isHit: true };
                 }
                 return cell;
@@ -99,25 +82,59 @@ function ComputerBoard({ name, size }) {
             return newPlayerBoard;
         });
 
-        /* --------------------------------------------- */
-        //* Dispatching actions
-
-        const shootAIAction = {
-            type: 'SHOOT_AI',
-            payload: { clickedCell }
-        }
         const shootPlayerAction = {
             type: 'SHOOT_PLAYER',
-            payload: { curShot }
+            payload: { curShotValue }
         }
-        gameDispatch(shootAIAction);
         if (!gameState.gameEnded) {
             gameDispatch(shootPlayerAction);
         }
-        /* ---------------------------------------------- */
-        //*Preparing the next shots for computer => player
+        //Setting hit, miss, sunk array and the next target
+        if (curShotValue.isOccupied === true) {
+            hitArrayRef.current.push(curShotValue);
+        } else if (!curShotValue.isOccupied) {
+            missArrayRef.current.push(curShotValue)
+        }
+        shipList.forEach((ship) => {
+            const shipHitCells = hitArrayRef.current.filter((cell) => cell.ship === ship.type);
+            if (shipHitCells.length === ship.hp) {
+                sunkArrayRef.current.push(...shipHitCells);
+                hitArrayRef.current = hitArrayRef.current.filter((cell) => cell.ship !== ship.type)
+            }
+        })
+        availablePlayerCells = playerBoard.filter((cell) => {
+            const diffFromHit = hitArrayRef.current.every(hitCell => hitCell.index !== cell.index);
+            const diffFromSunk = sunkArrayRef.current.every(sunkCell => sunkCell.index !== cell.index);
+            const diffFromMiss = missArrayRef.current.every(missCell => missCell.index !== cell.index);
+            return diffFromHit && diffFromSunk && diffFromMiss
+        });
+        if (curShotValue.isOccupied === true) {// hit an occupied cell 
+            if (prevSunkArrayRef.current.length === sunkArrayRef.current.length) {// damaged the ship but did not sink
+                curShotRef.current = randomize(findNextCell(hitArrayRef.current, availablePlayerCells));
+            }
+            if (prevSunkArrayRef.current.length !== sunkArrayRef.current.length) {
+                if (hitArrayRef.current.length > 0) {
+                    //making sure there's still cell that is a hit but not yet sunk a ship
+                    curShotRef.current = randomize(findNextCell(hitArrayRef.current, availablePlayerCells));
+                }
+                if (hitArrayRef.current.length === 0) {
+                    curShotRef.current = randomize(availablePlayerCells);
+                }
+                //Reset prevSunkArray for comparison purpose
+                prevSunkArrayRef.current = sunkArrayRef.current
+            }
 
-        /* if (curShot.isOccupied === true) */
+        }
+
+        if (curShotValue.isOccupied === false) {// Miss an occupied cell, cant sink ship anyway so finding hit cell to locate next cells is the only possibility
+            if (hitArrayRef.current.length > 0) {
+                curShotRef.current = randomize(findNextCell(hitArrayRef.current, availablePlayerCells));
+            }
+            if (hitArrayRef.current.length === 0) {
+                curShotRef.current = randomize(availablePlayerCells);
+            }
+
+        }
     }
 
     return (
@@ -136,7 +153,7 @@ function ComputerBoard({ name, size }) {
                                 key={square.key}
                                 data-x={square.x}
                                 data-y={square.y}
-                                onClick={gameState.gameStarted ? handleOnClick : null}
+                                onClick={gameState.gameStarted ? (e) => { handleOnClick(e); handleAI() } : null}
                             ></div>
                         )
                     })

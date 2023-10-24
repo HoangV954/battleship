@@ -47,10 +47,10 @@ const gameReducer = (state, action) => {
             }
         }
         case 'SHOOT_PLAYER': {
-            const { curShot } = action.payload;
+            const { curShotValue } = action.payload;
             let hp = state.playerHp;
             const updatedPlayerInventory = state.playerInventory.map((ship) => {
-                if (ship.type === curShot.ship) {
+                if (ship.type === curShotValue.ship) {
                     const updatedShip = {
                         ...ship,
                         hp: ship.hp - 1
