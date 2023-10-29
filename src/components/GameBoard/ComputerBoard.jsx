@@ -16,8 +16,10 @@ function ComputerBoard({ name, size }) {
 
 
     const iniBoard = () => {
-        const newCompBoard = shipPlacementRandomize();
-        setComputerBoard(newCompBoard)
+        if (compShipPlacement.length === 0) {
+            const newCompBoard = shipPlacementRandomize();
+            setComputerBoard(newCompBoard)
+        }
     }
 
     useEffect(() => {

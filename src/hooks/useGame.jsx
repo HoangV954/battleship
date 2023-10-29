@@ -5,6 +5,8 @@ import { iniPlayerBoard, iniComputerBoard } from "../utils/gameHelper";
 
 const gameIniState = {
     playerName: 'Hoang',
+    gameIntro: true,
+    gameSetup: true,
     gameStarted: false,
     gameEnded: false,
     currentTurn: 'player',
@@ -15,11 +17,18 @@ const gameIniState = {
     message: ''
 }
 
+
 const gameReducer = (state, action) => {
     switch (action.type) {
+        case 'SETUP_GAME':
+            return {
+                ...state,
+                gameSetup: true
+            }
         case 'START_GAME':
             return {
                 ...state,
+                gameSetup: false,
                 gameStarted: true
             }
         case 'SHOOT_AI': {

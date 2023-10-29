@@ -7,8 +7,9 @@ export default styled.div.attrs((props) => ({
     shouldForwardProp: (prop) => !['startX', 'startY', 'length', 'axis'].includes(prop),
 })`
 display: flex;
-height: ${(props) => props.axis === 'x' ? '30' : props.length * 30}px;
-width: ${(props) => props.axis === 'x' ? props.length * 30 : '30'}px;
+overflow: hidden;  /* Extremely important along w max width, max height to ensure the container grid isnt affected by ship size */
+max-height: ${(props) => props.axis === 'x' ? '3' : props.length * 3}rem;
+max-width: ${(props) => props.axis === 'x' ? props.length * 3 : '3'}rem;
 cursor: pointer;
 grid-column: ${(props) => props.axis === 'x' ?
         `${props.startY}/span ${props.length}`

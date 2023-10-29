@@ -12,10 +12,12 @@ const ShipHarbor = ({ axis }) => {
 
         const ship = e.target;
         const shipLoc = ship.getBoundingClientRect();
-        const grabbedCell = axis.main === 'x' ? Math.ceil((e.clientX - shipLoc.left) / 30) : Math.ceil((e.clientY - shipLoc.top) / 30);
+        const cellSizeInRem = 3; // Size of each cell in rem
+        const rootFontSizeInPx = 16; // Root font size in pixels
+        const cellSizeInPx = cellSizeInRem * rootFontSizeInPx;
+        const grabbedCell = axis.main === 'x' ? Math.ceil((e.clientX - shipLoc.left) / cellSizeInPx) : Math.ceil((e.clientY - shipLoc.top) / cellSizeInPx);
 
         setGrabbedCell(grabbedCell);
-
 
         harbor.forEach((ship) => {
             if (ship !== undefined && ship.type === e.target.id) {
@@ -31,7 +33,7 @@ const ShipHarbor = ({ axis }) => {
                     (ship) => {
                         if (ship !== undefined)
                             return ship.render({
-                                startX: ship.defaultX,
+                                startX: axis.main === 'x' ? ship.defaultX : ship.subX,
                                 startY: axis.main === 'x' ? ship.defaultY : ship.subY,
                                 length: ship.length,
                                 draggable: true,

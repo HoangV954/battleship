@@ -1,25 +1,114 @@
-.game-board {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 50px;
+.game-container {
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../../assets/imgs/main-game-bg3.png);
+    background-size: cover;
+    background-repeat: no-repeat no-repeat;
 }
+
+.logo-bar {
+    grid-area: logo;
+}
+
+.game-board {
+    grid-area: board;
+    display: flex;
+
+    .player-wrapper,
+    .computer-wrapper,
+    .harbor-wrapper {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+        width: 100%;
+        height: auto;
+        justify-content: center;
+        align-items: center;
+    }
+}
+
+.footer-bar {
+    grid-area: footer;
+}
+
+.character-wrapper {
+    height: auto;
+    width: auto;
+    display: flex;
+    /* flex-direction: row-reverse; */
+    position: absolute;
+    top: 0;
+    left: -133.5%;
+
+    p {
+        border: 1px solid black;
+        color: white;
+    }
+}
+
+.character {
+    img {
+        object-fit: contain;
+        width: 100%;
+        height: 100%;
+    }
+}
+
+// speech bubble
+.bubble {
+    position: relative;
+    width: 500px;
+    height: auto;
+    background: url(../../assets/imgs/text-bg-ally.png);
+    border: 8px solid #666;
+
+    &::before {
+        content: ' ';
+        position: absolute;
+        width: 0;
+        height: 0;
+        left: -40px;
+        right: auto;
+        top: -8px;
+        bottom: auto;
+        border: 32px solid;
+        border-color: #666 transparent transparent transparent;
+    }
+
+    &::after {
+        content: ' ';
+        position: absolute;
+        width: 15rem;
+        height: 15rem;
+        background: url(../../assets/imgs/panel-frame-ally.webp) center/contain no-repeat;
+        top: -33%;
+        right: -15%;
+    }
+}
+
+
 
 .player-board-container,
 .computer-board-container {
-    width: 300px;
-    height: 300px;
+    display: flex;
+    width: 30rem;
+    height: 30rem;
+    justify-content: center;
+    align-items: center;
     position: relative;
+
+    svg {
+        filter: brightness(5.5);
+    }
 }
 
-.board-container {
-    width: 300px;
-    height: 300px;
-
-}
-
+// Cells style
 [class*='square-'] {
-    border: 1px solid orange;
+    border: 0.1rem solid rgb(212, 167, 82);
+    box-shadow: 0 0 .1rem #fff,
+        0 0 .1rem #fff,
+        0 0 0.25rem rgb(212, 167, 82),
+        0 0 0.25rem rgb(212, 167, 82),
+        0 0 0.25rem rgb(212, 167, 82),
+        inset 0 0 .05rem rgb(212, 167, 82);
 }
 
 
