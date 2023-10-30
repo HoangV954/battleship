@@ -169,6 +169,7 @@ function PlayerBoard({ name, size, axis }) {
                                     axis: ship.axis,
                                     type: ship.type,
                                     draggable: false,
+                                    display: !ship.isSunk ? 'player' : 'sunk',
                                     key: ship.key
                                 })
                         }

@@ -6,8 +6,9 @@ import { shipList } from '../../utils/gameData';
 import { StyledBoard, LayerBoard } from "./BoardTemplates";
 
 function ComputerBoard({ name, size }) {
-    const { playerBoard, setPlayerBoard, computerBoard, setComputerBoard, compShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch } = useContext(GameContext);
+    const { playerBoard, setPlayerBoard, shipPlacement, setShipPlacement, computerBoard, setComputerBoard, compShipPlacement, setCompShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch } = useContext(GameContext);
 
+    const playerHitArrayRef = useRef(null);
     const hitArrayRef = useRef(null);
     const sunkArrayRef = useRef(null);
     const missArrayRef = useRef(null);
@@ -24,6 +25,7 @@ function ComputerBoard({ name, size }) {
 
     useEffect(() => {
         iniBoard();
+        playerHitArrayRef.current = [];
         hitArrayRef.current = [];
         sunkArrayRef.current = [];
         prevSunkArrayRef.current = [];
@@ -45,6 +47,25 @@ function ComputerBoard({ name, size }) {
         const targetClass = e.target.classList[0];
         const targetCellIndex = Number(targetClass.slice(7, targetClass.length));
         const clickedCell = computerBoard[targetCellIndex - 1];
+
+        if (clickedCell.isOccupied === true) {
+            playerHitArrayRef.current.push(clickedCell);
+        }
+        shipList.forEach((ship) => {
+            const shipHitCells = playerHitArrayRef.current.filter((cell) => cell.ship === ship.type);
+            if (shipHitCells.length === ship.hp) {
+                playerHitArrayRef.current = playerHitArrayRef.current.filter((cell) => cell.ship !== ship.type);
+                setCompShipPlacement((ships) => {
+                    return ships.map((newShip) => {
+                        if (newShip.type === ship.type) {
+                            return { ...newShip, isSunk: true };
+                        }
+                        return newShip;
+                    })
+                })
+                console.log(compShipPlacement)
+            }
+        })
         //* BOARD VISUALIZATION 
         setComputerBoard((compBoard) => {
             const newCompBoard = compBoard.map((cell) => {
@@ -72,7 +93,6 @@ function ComputerBoard({ name, size }) {
             curShotRef.current = randomCell;
         }
         const curShotValue = curShotRef.current;
-
         //Board visual + dispatch action
         setPlayerBoard((playerBoard) => {
             const newPlayerBoard = playerBoard.map((cell) => {
@@ -101,7 +121,15 @@ function ComputerBoard({ name, size }) {
             const shipHitCells = hitArrayRef.current.filter((cell) => cell.ship === ship.type);
             if (shipHitCells.length === ship.hp) {
                 sunkArrayRef.current.push(...shipHitCells);
-                hitArrayRef.current = hitArrayRef.current.filter((cell) => cell.ship !== ship.type)
+                hitArrayRef.current = hitArrayRef.current.filter((cell) => cell.ship !== ship.type);
+                setShipPlacement((ships) => {
+                    return ships.map((newShip) => {
+                        if (newShip.type === ship.type) {
+                            return { ...newShip, isSunk: true };
+                        }
+                        return newShip;
+                    })
+                })
             }
         })
         availablePlayerCells = playerBoard.filter((cell) => {
@@ -115,6 +143,7 @@ function ComputerBoard({ name, size }) {
                 curShotRef.current = randomize(findNextCell(hitArrayRef.current, availablePlayerCells));
             }
             if (prevSunkArrayRef.current.length !== sunkArrayRef.current.length) {
+
                 if (hitArrayRef.current.length > 0) {
                     //making sure there's still cell that is a hit but not yet sunk a ship
                     curShotRef.current = randomize(findNextCell(hitArrayRef.current, availablePlayerCells));
@@ -156,7 +185,30 @@ function ComputerBoard({ name, size }) {
                                 data-x={square.x}
                                 data-y={square.y}
                                 onClick={gameState.gameStarted ? (e) => { handleOnClick(e); handleAI() } : null}
-                            ></div>
+                            >
+                                {(square.isHit && !square.isOccupied) &&
+                                    (<svg
+                                        width={16}
+                                        height={16}
+                                        fill={'white'}
+                                        xmlns='http://www.w3.org/2000/svg'
+
+                                    >
+                                        <circle cx={8} cy={8} r={8} />
+                                    </svg>)
+                                }
+                                {(square.isHit && square.isOccupied) &&
+                                    (<svg
+                                        width={16}
+                                        height={16}
+                                        fill={'red'}
+                                        xmlns='http://www.w3.org/2000/svg'
+
+                                    >
+                                        <circle cx={8} cy={8} r={8} />
+                                    </svg>)
+                                }
+                            </div>
                         )
                     })
                 }
@@ -173,6 +225,7 @@ function ComputerBoard({ name, size }) {
                                     axis: ship.axis,
                                     type: ship.type,
                                     draggable: false,
+                                    display: !ship.isSunk ? 'computer' : 'sunk',
                                     key: ship.key
                                 })
                         }

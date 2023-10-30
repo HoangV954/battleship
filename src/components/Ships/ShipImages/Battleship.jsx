@@ -3,9 +3,19 @@ import PropTypes from 'prop-types';
 
 
 const Battleship = (props) => {
-    const { startX, startY, length, draggable, onDragStart, axis } = props;
+    const { startX, startY, length, draggable, onDragStart, axis, display } = props;
 
 
+    const getFillCColor = (display) => {
+        switch (display) {
+            case 'player':
+                return 'rgb(242,222,185)';
+            case 'computer':
+                return 'transparent';
+            case 'sunk':
+                return 'red'
+        }
+    }
     return (
         <ShipContainer startX={startX}
             startY={startY}
@@ -13,6 +23,7 @@ const Battleship = (props) => {
             draggable={draggable}
             onDragStart={onDragStart}
             axis={axis}
+            display={display}
             {...props} // Rest of the props since some might not be used by container
         >
             <svg
@@ -20,7 +31,7 @@ const Battleship = (props) => {
                 width='100%'
                 height='100%'
                 viewBox={axis === 'x' ? '0 0 302 98' : '0 0 98 302'}
-                fill='grey'
+                fill={getFillCColor(display)}
                 preserveAspectRatio='none'
             >
                 <path
@@ -37,6 +48,7 @@ Battleship.propTypes = {
     startY: PropTypes.number.isRequired,
     length: PropTypes.number.isRequired,
     draggable: PropTypes.bool.isRequired,
+    display: PropTypes.string.isRequired,
     onDragStart: PropTypes.func,
     axis: PropTypes.string.isRequired
 }

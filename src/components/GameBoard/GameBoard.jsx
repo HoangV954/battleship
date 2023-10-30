@@ -8,6 +8,7 @@ import Button from '../../utils/Button';
 import { StyledGameContainer } from './BoardTemplates';
 import Character from '../../utils/Character';
 import ShipHarbor from '../ShipPlacement/ShipHarbor';
+import Logo from '../Logo/Logo';
 
 export default function GameBoard({ axis, setAxis }) {
 
@@ -24,7 +25,9 @@ export default function GameBoard({ axis, setAxis }) {
 
     return (
         <StyledGameContainer>
-            <div className='logo-bar'>LOGO HERE</div>
+            <div className='logo-bar'>
+                <Logo />
+            </div>
             <div className='text-bar'>TEXT HERE</div>
             <div className="game-board">
                 <div className="player-wrapper">

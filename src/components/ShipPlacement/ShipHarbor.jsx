@@ -40,6 +40,7 @@ const ShipHarbor = ({ axis }) => {
                                 type: ship.type,
                                 axis: axis.main,
                                 onDragStart: handleDragStart,
+                                display: '',
                                 key: ship.key
                             })
                     }

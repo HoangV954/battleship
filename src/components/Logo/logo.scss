@@ -1,0 +1,91 @@
+@font-face {
+    font-family: 'logo';
+    src: url(../../assets/fonts/SceneBlack.otf);
+}
+
+@font-face {
+    font-family: '40k';
+    src: url(../../assets/fonts/BigShouldersStencilText-Bold.ttf);
+}
+
+.logo-bar {
+    grid-area: logo;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 2rem;
+}
+
+.logo-text-container {
+    font-family: 'logo';
+    font-size: 2rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    line-height: 1;
+    height: fit-content;
+
+
+    -webkit-text-stroke-width: 1.5px;
+    -webkit-text-stroke-color: #60666e;
+
+    &::after {
+        content: '';
+        display: block;
+        position: absolute;
+        width: 16rem;
+        height: 5rem;
+        background: url(../../assets/imgs/imperium-logo.png);
+        background-size: cover;
+        background-position: center;
+        background-repeat: no-repeat;
+        margin-left: auto;
+        margin-right: auto;
+        top: 6rem;
+    }
+
+    div.text {
+        text-align: center;
+        position: relative;
+
+        .test {
+            background: linear-gradient(to bottom, #293e3c 10%, #738587 30%, #dadfe0 50%, white 60%, #dadfe0 70%, #738587 90%, #293e3c 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+
+        span.capital {
+            position: absolute;
+            font-size: 5rem;
+            line-height: 0.73;
+            top: 0;
+            font-family: serif;
+            font-weight: bold;
+            background: linear-gradient(to bottom, #293e3c 10%, #738587 30%, #dadfe0 50%, white 60%, #dadfe0 70%, #738587 90%, #293e3c 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+
+            &:first-child {
+                left: -3.2rem;
+            }
+        }
+
+        &::after {
+            content: '40,000';
+            position: absolute;
+            display: block;
+            width: 100%;
+            text-align: center;
+            margin-left: auto;
+            margin-right: auto;
+            font-family: '40k';
+            background: linear-gradient(to bottom, #293e3c 10%, #738587 30%, #dadfe0 50%, white 60%, #dadfe0 70%, #738587 90%, #293e3c 100%);
+            background-clip: text;
+            -webkit-background-clip: text;
+            color: transparent;
+        }
+    }
+}
