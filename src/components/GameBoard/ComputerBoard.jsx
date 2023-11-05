@@ -3,10 +3,10 @@ import { useContext, useEffect, useRef } from 'react';
 import GameContext from '../../hooks/GameContext';
 import { findNextCell } from '../../utils/gameHelper';
 import { shipList } from '../../utils/gameData';
-import { StyledBoard, LayerBoard } from "./BoardTemplates";
+import { StyledBoard, LayerBoard } from "../../utils/BoardTemplates";
 
 function ComputerBoard({ name, size }) {
-    const { playerBoard, setPlayerBoard, shipPlacement, setShipPlacement, computerBoard, setComputerBoard, compShipPlacement, setCompShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch } = useContext(GameContext);
+    const { playerBoard, setPlayerBoard, setShipPlacement, computerBoard, setComputerBoard, compShipPlacement, setCompShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch } = useContext(GameContext);
 
     const playerHitArrayRef = useRef(null);
     const hitArrayRef = useRef(null);
@@ -63,7 +63,6 @@ function ComputerBoard({ name, size }) {
                         return newShip;
                     })
                 })
-                console.log(compShipPlacement)
             }
         })
         //* BOARD VISUALIZATION 

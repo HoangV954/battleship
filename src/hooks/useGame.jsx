@@ -4,11 +4,14 @@ import { iniPlayerBoard, iniComputerBoard } from "../utils/gameHelper";
 
 
 const gameIniState = {
-    playerName: 'Hoang',
-    gameIntro: true,
+    playerName: 'Hoangg',
+    gameIntro: false,
     gameSetup: true,
     gameStarted: false,
     gameEnded: false,
+    goOn: false,
+    giveUp: false,
+    playerVictory: false,
     currentTurn: 'player',
     playerHp: 12,
     computerHp: 12,
@@ -23,6 +26,7 @@ const gameReducer = (state, action) => {
         case 'SETUP_GAME':
             return {
                 ...state,
+                gameIntro: false,
                 gameSetup: true
             }
         case 'START_GAME':
@@ -31,9 +35,17 @@ const gameReducer = (state, action) => {
                 gameSetup: false,
                 gameStarted: true
             }
+        case 'GIVE_UP':
+            return {
+                ...state,
+                gameEnded: true,
+                goOn: false,
+                giveUp: true
+            }
         case 'SHOOT_AI': {
             const { clickedCell } = action.payload;
             let hp = state.computerHp;
+            let message = state.message;
             const updatedCompInventory = state.computerInventory.map((ship) => {
                 if (ship.type === clickedCell.ship) {
                     const updatedShip = {
@@ -42,7 +54,7 @@ const gameReducer = (state, action) => {
                     }
                     hp = hp - 1;
                     if (updatedShip.hp === 0) {
-                        console.log(`You have destroyed the enemy's ${ship.type}`)
+                        message = `You have destroyed the enemy's ${ship.type}`;
                         return null
                     }
                     return updatedShip;
@@ -51,6 +63,7 @@ const gameReducer = (state, action) => {
             })
             return {
                 ...state,
+                message: message,
                 computerHp: hp,
                 computerInventory: updatedCompInventory.filter((ship) => ship !== null)
             }

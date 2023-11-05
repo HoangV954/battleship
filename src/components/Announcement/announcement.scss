@@ -1,0 +1,60 @@
+@font-face {
+    font-family: 'helper';
+    src: url(../../assets/fonts/exocet.ttf);
+}
+
+.announcement-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    grid-area: text;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 10rem;
+        height: 5rem;
+        background: url(../../assets/imgs/Imperialis.png) center/cover no-repeat;
+        bottom: -60%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+}
+
+.announcement-wrapper {
+    display: flex;
+    align-items: center;
+    height: 100%;
+    width: 70%;
+    background-image: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../../assets/imgs/circuit.png), url(../../assets/imgs/helper-crop2.png);
+    background-size: cover;
+    background-repeat: no-repeat;
+    border-radius: 8px;
+    border: 2px solid rgba(0, 255, 255, 0.3);
+    box-shadow: inset 0 0 10px 2px rgba(0, 255, 255, 0.3), 0 0 5px 2px rgba(0, 255, 255, 0.1);
+
+    .helper-avatar {
+        height: 100%;
+        width: 20%;
+
+        background-image: url(../../assets/imgs/helper-unscreen.gif);
+        background-size: contain;
+        background-position: center;
+        background-repeat: no-repeat;
+    }
+
+    .helper-text {
+        height: 60%;
+        width: 75%;
+        padding-left: 1rem;
+        display: flex;
+        align-items: center;
+        background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url(../../assets/imgs/matrix.gif) center/cover no-repeat;
+        border: 2px solid rgba(0, 255, 255, 0.3);
+        box-shadow: inset 0 0 10px 2px rgba(0, 255, 255, 0.3), 0 0 5px 2px rgba(0, 255, 255, 0.1);
+        font-family: 'helper';
+        font-weight: bold;
+        font-size: 1.2rem;
+    }
+}

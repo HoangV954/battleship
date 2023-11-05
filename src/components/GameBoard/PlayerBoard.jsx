@@ -2,7 +2,7 @@ import { useContext, useEffect } from 'react';
 import GameContext from '../../hooks/GameContext';
 import { findShipIdx, getCells, getCellsCondition, resetHoverBoard } from "../../utils/gameHelper";
 import PropTypes from 'prop-types';
-import { StyledBoard, LayerBoard } from "./BoardTemplates";
+import { StyledBoard, LayerBoard } from "../../utils/BoardTemplates";
 import { shipList } from '../../utils/gameData';
 
 function PlayerBoard({ name, size, axis }) {
