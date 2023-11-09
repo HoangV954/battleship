@@ -6,14 +6,45 @@ import { useContext } from 'react';
 import GameContext from '../../hooks/GameContext';
 import Rune from './Templates/RuneText';
 import Button from '../../utils/Button';
+import useSound from 'use-sound';
+import giveUp from '../../assets/sound/button-deny.mp3';
+import evilLaugh from '../../assets/sound/evil-laugh.mp3';
 
-export default function Character({ char, index, choice }) {
 
-    const { gameState, gameDispatch } = useContext(GameContext);
+
+
+export default function Character({ char, index, choice, setAxis }) {
+
+    const { gameState, gameDispatch, resetGame } = useContext(GameContext);
+    const [playGiveUp] = useSound(giveUp, { volume: 0.4 })
+    const [playLaugh] = useSound(evilLaugh, { volume: 0.3 })
 
     const handleGiveUp = () => {
+        playGiveUp();
+
         gameDispatch({ type: 'GIVE_UP' })
+        setTimeout(() => {
+
+            gameDispatch({ type: 'SET_ENDING' })
+            if (!gameState.playerVictory) {
+                playLaugh();
+            }
+        }, 8000)
     }
+
+    const handleReset = (resetType) => {
+        gameDispatch({ type: 'PURSUIT' })
+        setTimeout(() => {
+            setAxis(() => {
+                return {
+                    main: 'x',
+                    sub: 'y'
+                }
+            })
+            resetGame(resetType);
+        }, 8000)
+    }
+
 
     return (
         <>
@@ -58,10 +89,18 @@ export default function Character({ char, index, choice }) {
                         }
                     </div>
                     {
-                        choice ? (
+                        (choice && gameState.playerVictory) ? (
                             <div className='choice-wrapper'>
-                                <Button name='choice__reset' textContent='Fight on !!'></Button>
-                                <Button name='choice__finish' textContent='Give up...' onClick={handleGiveUp}></Button>
+                                <Button name='choice__reset' textContent='Pursuit' onClick={() => handleReset('soft')}></Button>
+                                <Button name='choice__finish' textContent='Fall back...' onClick={handleGiveUp}></Button>
+                            </div>
+                        ) : null
+                    }
+                    {
+                        (choice && !gameState.playerVictory) ? (
+                            <div className="choice-wrapper">
+                                <Button name='choice__reset' textContent='Resist' onClick={() => handleReset('soft')}></Button>
+                                <Button name='choice__finish' textContent='Succumb...' onClick={handleGiveUp}></Button>
                             </div>
                         ) : null
                     }
@@ -74,5 +113,7 @@ export default function Character({ char, index, choice }) {
 Character.propTypes = {
     char: PropTypes.object,
     index: PropTypes.number,
-    choice: PropTypes.bool
+    choice: PropTypes.bool,
+    victory: PropTypes.bool,
+    setAxis: PropTypes.func
 }

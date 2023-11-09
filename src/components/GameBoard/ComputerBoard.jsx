@@ -4,9 +4,15 @@ import GameContext from '../../hooks/GameContext';
 import { findNextCell } from '../../utils/gameHelper';
 import { shipList } from '../../utils/gameData';
 import { StyledBoard, LayerBoard } from "../../utils/BoardTemplates";
+import useSound from 'use-sound';
+import lazer from '../../assets/sound/lazer-gun2.mp3';
+import explo from '../../assets/sound/explosion.mp3';
 
 function ComputerBoard({ name, size }) {
     const { playerBoard, setPlayerBoard, setShipPlacement, computerBoard, setComputerBoard, compShipPlacement, setCompShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch } = useContext(GameContext);
+
+    const [playShoot] = useSound(lazer, { volume: 0.3 });
+    const [playHit] = useSound(explo, { volume: 0.5 })
 
     const playerHitArrayRef = useRef(null);
     const hitArrayRef = useRef(null);
@@ -50,6 +56,9 @@ function ComputerBoard({ name, size }) {
 
         if (clickedCell.isOccupied === true) {
             playerHitArrayRef.current.push(clickedCell);
+            playHit()
+        } else {
+            playShoot()
         }
         shipList.forEach((ship) => {
             const shipHitCells = playerHitArrayRef.current.filter((cell) => cell.ship === ship.type);
@@ -112,9 +121,11 @@ function ComputerBoard({ name, size }) {
         }
         //Setting hit, miss, sunk array and the next target
         if (curShotValue.isOccupied === true) {
+            playHit()
             hitArrayRef.current.push(curShotValue);
         } else if (!curShotValue.isOccupied) {
             missArrayRef.current.push(curShotValue)
+            playShoot()
         }
         shipList.forEach((ship) => {
             const shipHitCells = hitArrayRef.current.filter((cell) => cell.ship === ship.type);
@@ -169,7 +180,6 @@ function ComputerBoard({ name, size }) {
 
     return (
         <>
-            <p>{gameState.message}</p>
             <StyledBoard name={name} size={size}>
                 {
                     computerBoard.map((square) => {

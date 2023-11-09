@@ -3,18 +3,38 @@ import textBgAlly from '../../../assets/imgs/text-bg-ally.png';
 import textBgEnemy from '../../../assets/imgs/text-bg-enemy.png';
 import loseBg from '../../../assets/imgs/chaos-won.jpg';
 import winBg from '../../../assets/imgs/imperial-won2.jpg';
+import imperiumEnd from '../../../assets/imgs/imperium-end.jpg';
+import chaosEnd from '../../../assets/imgs/chaos-end.jpg';
 
 const ModalContainer = styled.div.attrs({
     className: 'modal-wrapper'
 }).withConfig({
-    shouldForwardProp: (prop) => !['victory'].includes(prop),
+    shouldForwardProp: (prop) => !['victory', 'goodend', 'badend'].includes(prop),
 })`
     width: 100%;
-    height: auto;
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url(${(props) => props.victory === 'true' ? winBg : loseBg});
-    z-index: 10000;
+    height: ${(props) => (props.goodend || props.badend) ? '100vh' : '1400px'};
+    display: ${(props) => (props.goodend || props.badend) ? 'flex' : ''};
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.7))
+    ${(props) => (props.goodend && !props.badend) ? `, url(${imperiumEnd})` : ''}
+    ${(props) => (!props.goodend && props.badend) ? `, url(${chaosEnd})` : ''}
+    ${(props) => (props.victory && !props.goodend && !props.badend) ? `, url(${winBg})` : `, url(${loseBg})`};
     background-size: cover;
+    background-position: center center;
     background-repeat: no-repeat;
+`
+
+const Ending = styled.div.attrs({
+    className: 'ending-wrapper'
+}).withConfig({
+    shouldForwardProp: (prop) => !['goodend', 'badend'].includes(prop),
+})`
+display: flex;
+align-items: center;
+justify-content: center;
+width: 100%;
+height: 50%
 `
 
 const CharacterContainer = styled.div.attrs((props) => ({
@@ -78,4 +98,4 @@ box-shadow: ${(props) => props.faction === 'protag' ? 'inset 0 0 10px 2px rgba(0
 border-radius: 1.2rem;
 `
 
-export { ModalContainer, CharacterContainer, TextBox, NamePlate }
+export { ModalContainer, CharacterContainer, TextBox, NamePlate, Ending }

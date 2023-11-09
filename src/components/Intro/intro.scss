@@ -1,0 +1,133 @@
+.intro-wrapper {
+    background-image: linear-gradient(rgba(0, 0, 0, 0.8), rgba(0, 0, 0, 0.8)), url(../../assets/imgs/intro-bg.jpg);
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 100%;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2rem;
+
+    form {
+        display: flex;
+        flex-direction: column;
+        gap: 2rem;
+    }
+
+    button {
+        width: 9rem;
+        height: 3rem;
+        align-self: center;
+        padding: 0.3rem 0.5rem;
+
+        position: relative;
+        color: white;
+        border: none;
+        padding: 10px 0;
+
+        background: url(../../assets/imgs/btn-gold-bg.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        font-family: 'menu';
+        z-index: 99;
+        filter: grayscale(100%);
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, .5);
+
+        &::before,
+        &::after {
+            content: '';
+            height: 100%;
+            width: 60%;
+            display: block;
+            position: absolute;
+            top: 0;
+            z-index: -2;
+        }
+
+        &::before {
+            background: url(../../assets/imgs/btn-gold-left.png);
+            left: -25%;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        &::after {
+            background: url(../../assets/imgs/btn-gold-right.png);
+            right: -25%;
+            height: 100%;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        &:hover {
+            filter: grayscale(0%);
+        }
+    }
+
+    input {
+        outline: none;
+        width: 14rem;
+        padding: 0.7rem 0.5rem;
+        border: 4px solid rgba(0, 255, 255, 0.7);
+        border-radius: 4px;
+        background: url(../../assets/imgs/text-bg-ally.png) center/cover no-repeat;
+        font-family: 'menu';
+        color: white;
+
+        &:focus {
+            box-shadow: inset 0 0 10px 2px rgba(0, 255, 255, 0.3), 0 0 5px 2px rgba(0, 255, 255, 0.1);
+            caret-color: white;
+        }
+
+        &::placeholder {
+            color: white
+        }
+    }
+
+    .logo-bar {
+        margin-bottom: 8rem;
+    }
+
+    .logo-text-container {
+        transform: scale(2);
+        animation: fadeIn 5s ease;
+
+        &::after {
+            animation: zoomFlip 5s ease;
+            top: 4rem;
+        }
+    }
+
+}
+
+.intro {
+
+
+    &__error {
+        font-family: 'menu';
+        color: red
+    }
+}
+
+@keyframes fadeIn {
+    0% {
+        opacity: 0;
+    }
+
+    100% {
+        opacity: 1;
+    }
+}
+
+@keyframes zoomFlip {
+    0% {
+        opacity: 0;
+        transform: scale(0.3) rotateY(0deg);
+    }
+
+    100% {
+        opacity: 1;
+        transform: scale(1) rotateY(360deg);
+    }
+}

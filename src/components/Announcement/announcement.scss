@@ -9,17 +9,6 @@
     justify-content: center;
     grid-area: text;
     position: relative;
-
-    &::after {
-        content: '';
-        position: absolute;
-        width: 10rem;
-        height: 5rem;
-        background: url(../../assets/imgs/Imperialis.png) center/cover no-repeat;
-        bottom: -60%;
-        margin-left: auto;
-        margin-right: auto;
-    }
 }
 
 .announcement-wrapper {
@@ -56,5 +45,6 @@
         font-family: 'helper';
         font-weight: bold;
         font-size: 1.2rem;
+
     }
 }

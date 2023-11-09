@@ -1,18 +1,18 @@
 import { useState, useEffect, useReducer } from "react";
 import { shipList } from "../utils/gameData";
-import { iniPlayerBoard, iniComputerBoard } from "../utils/gameHelper";
+import { iniPlayerBoard, iniComputerBoard, generateBoard } from "../utils/gameHelper";
 
 
 const gameIniState = {
-    playerName: 'Hoangg',
-    gameIntro: false,
-    gameSetup: true,
+    playerName: '',
+    gameIntro: true,
+    gameSetup: false,
     gameStarted: false,
     gameEnded: false,
-    goOn: false,
-    giveUp: false,
+    giveUp: null,
     playerVictory: false,
-    currentTurn: 'player',
+    imperialEnd: false,
+    chaosEnd: false,
     playerHp: 12,
     computerHp: 12,
     playerInventory: [...shipList],
@@ -23,25 +23,29 @@ const gameIniState = {
 
 const gameReducer = (state, action) => {
     switch (action.type) {
-        case 'SETUP_GAME':
+        case 'SETUP_GAME': {
+            const { inputVal } = action.payload;
+            let message = state.message;
+            message = `Greetings Admiral ${inputVal}, drag the ships to your desired strategic position`
             return {
                 ...state,
+                message: message,
+                playerName: inputVal,
                 gameIntro: false,
                 gameSetup: true
             }
-        case 'START_GAME':
+        }
+        case 'START_GAME': {
+            let message = state.message;
+            message = `Multiple Chaos vessels located. Nova Cannon charged. Firing on command.`
             return {
                 ...state,
+                message: message,
                 gameSetup: false,
                 gameStarted: true
             }
-        case 'GIVE_UP':
-            return {
-                ...state,
-                gameEnded: true,
-                goOn: false,
-                giveUp: true
-            }
+        }
+
         case 'SHOOT_AI': {
             const { clickedCell } = action.payload;
             let hp = state.computerHp;
@@ -54,7 +58,7 @@ const gameReducer = (state, action) => {
                     }
                     hp = hp - 1;
                     if (updatedShip.hp === 0) {
-                        message = `You have destroyed the enemy's ${ship.type}`;
+                        message = `You have destroyed enemy's ${ship.type}`;
                         return null
                     }
                     return updatedShip;
@@ -71,6 +75,7 @@ const gameReducer = (state, action) => {
         case 'SHOOT_PLAYER': {
             const { curShotValue } = action.payload;
             let hp = state.playerHp;
+            let message = state.message;
             const updatedPlayerInventory = state.playerInventory.map((ship) => {
                 if (ship.type === curShotValue.ship) {
                     const updatedShip = {
@@ -79,7 +84,7 @@ const gameReducer = (state, action) => {
                     }
                     hp = hp - 1;
                     if (updatedShip.hp === 0) {
-                        console.log(`Hitler's army destroyed your ${ship.type}`)
+                        message = `Chaos army has destroyed your ${ship.type}`
                         return null
                     }
                     return updatedShip;
@@ -88,28 +93,79 @@ const gameReducer = (state, action) => {
             })
             return {
                 ...state,
+                message: message,
                 playerHp: hp,
                 playerInventory: updatedPlayerInventory.filter((ship) => ship !== null)
             }
         }
         case 'GAME_ENDED':
             {
-                let message;
-                let winner;
+                let victory;
+
                 if (state.playerHp !== 0) {
-                    winner = state.playerName;
+                    victory = true
                 }
                 else if (state.computerHp !== 0) {
-                    winner = 'Hitler'
+                    victory = false
                 }
-                message = `Congrats ${winner}`
-                console.log(state.message)
+
                 return {
                     ...state,
                     gameStarted: false,
                     gameEnded: true,
-                    message: message
+                    playerVictory: victory
                 }
+            }
+        case 'PURSUIT': {
+            return {
+                ...state,
+                giveUp: false,
+            }
+        }
+        case 'GIVE_UP': {
+
+            return {
+                ...state,
+                giveUp: true,
+            }
+        }
+
+        case 'SET_ENDING': {
+            let goodEnd;
+            let badEnd
+
+            if (state.playerVictory) {
+                goodEnd = true;
+                badEnd = false;
+            } else {
+                goodEnd = false;
+                badEnd = true;
+            }
+
+
+            return {
+                ...state,
+                imperialEnd: goodEnd,
+                chaosEnd: badEnd
+            }
+        }
+        case 'SOFT_RESET': {
+            let playerName = state.playerName;
+            let message = `Greetings Admiral ${state.playerName}, drag the ships to your desired strategic position`
+
+            return {
+                ...gameIniState,
+                message: message,
+                playerName: playerName,
+                gameSetup: true,
+                gameIntro: false,
+            }
+        }
+        case 'HARD_RESET':
+            return {
+                ...gameIniState,
+                playerName: '',
+                message: '',
             }
     }
 }
@@ -123,6 +179,18 @@ function useGame() {
     const [grabbedCell, setGrabbedCell] = useState(0);
     const [shipLength, setShipLength] = useState(0);
     const [gameState, gameDispatch] = useReducer(gameReducer, gameIniState);
+
+    const resetGame = (resetType) => {
+        setHarbor([...shipList]);
+        const newPlayerBoard = generateBoard();
+        const newCompBoard = generateBoard();
+        setPlayerBoard(newPlayerBoard);
+        setComputerBoard(newCompBoard);
+        setShipPlacement([]);
+        setCompShipPlacement([]);
+
+        resetType === 'soft' ? gameDispatch({ type: 'SOFT_RESET' }) : gameDispatch({ type: 'HARD_RESET' });
+    }
 
     useEffect(() => {
         if (harbor.every((ship) => ship == undefined)) {
@@ -219,7 +287,7 @@ function useGame() {
         return newCompBoard
     }
 
-    return { harbor, setHarbor, playerBoard, setPlayerBoard, computerBoard, setComputerBoard, shipPlacement, setShipPlacement, compShipPlacement, setCompShipPlacement, grabbedCell, setGrabbedCell, shipLength, setShipLength, randomize, shipPlacementRandomize, gameState, gameDispatch }
+    return { harbor, setHarbor, playerBoard, setPlayerBoard, computerBoard, setComputerBoard, shipPlacement, setShipPlacement, compShipPlacement, setCompShipPlacement, grabbedCell, setGrabbedCell, shipLength, setShipLength, randomize, shipPlacementRandomize, gameState, gameDispatch, resetGame }
 }
 
 export default useGame;

@@ -1,4 +1,4 @@
-import { useContext, useEffect } from 'react';
+import { useContext } from 'react';
 import GameContext from '../../hooks/GameContext';
 import { findShipIdx, getCells, getCellsCondition, resetHoverBoard } from "../../utils/gameHelper";
 import PropTypes from 'prop-types';
@@ -7,11 +7,8 @@ import { shipList } from '../../utils/gameData';
 
 function PlayerBoard({ name, size, axis }) {
 
-    const { playerBoard, setPlayerBoard, shipPlacement, setShipPlacement, setHarbor, grabbedCell, shipLength, gameState } = useContext(GameContext);
+    const { playerBoard, setPlayerBoard, shipPlacement, setShipPlacement, setHarbor, grabbedCell, shipLength } = useContext(GameContext);
 
-    useEffect(() => {
-
-    }, [gameState])
 
     const handleDrop = (e) => {
         e.preventDefault();
@@ -73,7 +70,9 @@ function PlayerBoard({ name, size, axis }) {
                 return newPlayerBoard;
             })
         }
-
+        setPlayerBoard((playerBoard) =>
+            resetHoverBoard(playerBoard)
+        )
 
     }
 
@@ -126,12 +125,6 @@ function PlayerBoard({ name, size, axis }) {
 
     }
 
-    const handleOnClick = () => {
-        console.log(gameState.gameStarted)
-    }
-
-
-
     return (
         <>
             <StyledBoard name={name} size={size}>
@@ -145,14 +138,38 @@ function PlayerBoard({ name, size, axis }) {
                             ${square.ship ? `type-${square.ship}` : ''}
                             ${square.isHit && !square.isOccupied ? 'miss' : ''}
                             ${(square.isHit && square.isOccupied) ? 'sunk' : ''}`}
-                                onClick={gameState.gameStarted ? handleOnClick : null}
+
                                 onDrop={handleDrop}
                                 onDragOver={handleDragOver}
                                 onDragLeaveCapture={handleDragEnd}
+                                onDragLeave={handleDragEnd}
                                 key={square.key}
                                 data-x={square.x}
                                 data-y={square.y}
-                            ></div>
+                            >
+                                {(square.isHit && !square.isOccupied) &&
+                                    (<svg
+                                        width={16}
+                                        height={16}
+                                        fill={'white'}
+                                        xmlns='http://www.w3.org/2000/svg'
+
+                                    >
+                                        <circle cx={8} cy={8} r={8} />
+                                    </svg>)
+                                }
+                                {(square.isHit && square.isOccupied) &&
+                                    (<svg
+                                        width={16}
+                                        height={16}
+                                        fill={'red'}
+                                        xmlns='http://www.w3.org/2000/svg'
+
+                                    >
+                                        <circle cx={8} cy={8} r={8} />
+                                    </svg>)
+                                }
+                            </div>
                         )
                     })
                 }

@@ -1,5 +1,5 @@
 import './GameBoard.scss';
-import { useContext } from 'react';
+import { useContext, useEffect } from 'react';
 import PlayerBoard from './PlayerBoard';
 import ComputerBoard from './ComputerBoard';
 import PropTypes from 'prop-types';
@@ -10,11 +10,21 @@ import ShipHarbor from '../ShipPlacement/ShipHarbor';
 import Logo from '../Logo/Logo';
 import Announcement from '../Announcement/Announcement';
 import Modal from '../Modal/Modal';
-import { Fade } from "react-awesome-reveal";
+import Intro from '../Intro/Intro';
+import { AnimatePresence, motion } from 'framer-motion';
+import useSound from 'use-sound';
+import ReactHowler from 'react-howler';
+import mainTheme from '../../assets/sound/main-theme.mp3';
+import announcerSound from '../../assets/sound/announcement.mp3'
 
 export default function GameBoard({ axis, setAxis }) {
 
     const { gameState } = useContext(GameContext);
+    const [playAnnounce] = useSound(announcerSound, { volume: 0.5 });
+
+    useEffect(() => {
+        playAnnounce();
+    }, [gameState.message])
 
     const onClick = () => {
         setAxis((axis) => {
@@ -27,45 +37,91 @@ export default function GameBoard({ axis, setAxis }) {
 
     return (
         <>
-            {(gameState.gameStarted || gameState.gameSetup) ? (<StyledGameContainer>
-                <Logo />
-                <Announcement />
-                <div className="game-board">
-                    <div className="player-wrapper">
-                        <p>IMPERIUM FLEET</p>
-                        <div className='player-board-container'>
-                            <PlayerBoard name='player' size={30} axis={axis}></PlayerBoard>
+            <AnimatePresence mode='wait'>
+                {
+                    gameState.gameIntro &&
+                    (<motion.div
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                        exit={{ opacity: 0 }}
+                        transition={{ duration: 0.5 }}
+                        key="intro">
+                        <Intro></Intro>
+                    </motion.div>)
+                }
+                {(gameState.gameStarted || gameState.gameSetup) && (<motion.div
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.5 }}
+                    key="game">
+                    <StyledGameContainer>
+                        <ReactHowler
+                            src={mainTheme}
+                            playing={true}
+                            loop={true}
+                        />
+                        <Logo />
+                        <Announcement />
+                        {gameState.gameSetup && <motion.div
+                            className="axis-changer"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 3 }}
+                            key={'axis-changer'}>
+                            <Button name='axis__active' onClick={onClick} textContent={`Current Axis: ${axis.main}`}>
+                            </Button>
+                        </motion.div>}
+                        <div className="game-board">
+                            <div className="player-wrapper">
+                                <p>IMPERIUM FLEET</p>
+                                <div className='player-board-container'>
+                                    <PlayerBoard name='player' size={30} axis={axis}></PlayerBoard>
+                                </div>
+                            </div>
+                            <AnimatePresence mode='wait'>
+                                {
+                                    gameState.gameStarted &&
+                                    (<motion.div
+                                        initial={{ opacity: 0 }}
+                                        animate={{ opacity: 1 }}
+                                        exit={{ opacity: 0 }}
+                                        transition={{ duration: 3 }}
+                                        className='computer-wrapper'
+                                        key="computer">
+                                        <p>CHAOS FORCE</p>
+                                        <div className="computer-board-container">
+                                            <ComputerBoard name='computer' size={30} axis={axis}></ComputerBoard>
+                                        </div>
+                                    </motion.div>)
+                                }
+                                {
+                                    gameState.gameSetup && (
+                                        <motion.div className='harbor-wrapper'
+                                            initial={{ opacity: 0 }}
+                                            animate={{ opacity: 1 }}
+                                            exit={{ opacity: 0 }}
+                                            transition={{ duration: 3 }}
+                                            key={'harbor'}>
+                                            <p>SPACE WARP</p>
+                                            <ShipHarbor axis={axis}></ShipHarbor>
+                                        </motion.div>
+                                    )
+                                }
+                            </AnimatePresence>
                         </div>
-                    </div>
-                    {
-                        gameState.gameStarted && (<div className={`computer-wrapper ${!gameState.gameSetup ? 'fadeIn' : 'fadeOut'}`}>
-                            <p>CHAOS FORCE</p>
-                            <div className="computer-board-container">
-                                <ComputerBoard name='computer' size={30} axis={axis}></ComputerBoard>
-                            </div>
-                        </div>)
-                    }
-                    {
-                        gameState.gameSetup && (
-                            <div className={`harbor-wrapper ${!gameState.gameIntro ? 'fadeIn' : 'fadeOut'}`}>
-                                <p>SPACE PORT</p>
-                                <ShipHarbor axis={axis}></ShipHarbor>
-                            </div>
-                        )
-                    }
-
-                </div>
-                <div className='footer-bar'>Footer
-                    <Button name='axis-changer' onClick={onClick} textContent={`Current Axis: ${axis.main}`}></Button>
-                </div>
-            </StyledGameContainer>) : null
-            }
-            {
-                gameState.playerVictory && (
-
-                    <Modal victory={gameState.playerVictory}></Modal>
-                )
-            }
+                        <div className='footer-bar'>Footer
+                        </div>
+                    </StyledGameContainer>
+                </motion.div>)
+                }
+                {
+                    gameState.gameEnded && (
+                        <Modal setAxis={setAxis}></Modal>
+                    )
+                }
+            </AnimatePresence>
         </>
     )
 }

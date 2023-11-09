@@ -11,7 +11,7 @@
 @font-face {
     font-family: 'villain';
 
-    src: url(../../assets/fonts/exocet.ttf);
+    src: url(../../assets/fonts/diablo.ttf);
 }
 
 @font-face {
@@ -24,9 +24,22 @@
     src: url(../../assets/fonts/ModestoExpandedLight.ttf);
 }
 
+@font-face {
+    font-family: 'ending';
+    src: url(../../assets/fonts/Chomsky.otf);
+}
+
+@font-face {
+    font-family: 'chaos';
+    src: url(../../assets/fonts/diablo.ttf);
+}
+
+
 .rune {
     font-family: 'rune';
-    color: rgb(242, 8, 8);
+    color: rgb(203, 0, 0);
+    font-size: 0.7rem;
+    letter-spacing: 0.3rem;
 }
 
 .dialogue-container {
@@ -55,7 +68,7 @@
 [class^='villain'] {
     flex-direction: row-reverse;
     font-family: 'villain';
-    font-size: 1rem;
+    font-size: 1.3rem;
 
 }
 
@@ -108,6 +121,7 @@
 
     .text {
         padding: 1rem 2rem;
+        word-wrap: break-word;
     }
 
     &::before {
@@ -155,6 +169,10 @@
 
 .Typewriter {
     min-height: 5rem;
+    display: flex;
+    align-items: center;
+    line-height: 1.5rem;
+    letter-spacing: 0.1rem;
 }
 
 .choice-wrapper {
@@ -222,6 +240,76 @@
     }
 }
 
+.ending-wrapper>div {
+
+    display: flex;
+    gap: 2rem;
+    transform: scale(0.94);
+    animation: scale 3s forwards cubic-bezier(0.5, 1, 0.89, 1);
+
+    span {
+        letter-spacing: 0.2rem;
+        font-size: 8rem;
+        opacity: 0;
+        filter: blur(4px);
+
+        &:nth-child(1) {
+            animation: fade-in 0.8s 0.1s forwards cubic-bezier(0.11, 0, 0.5, 0);
+        }
+
+        &:nth-child(2) {
+            animation: fade-in 0.8s 0.2s forwards cubic-bezier(0.11, 0, 0.5, 0);
+        }
+    }
+}
+
+@keyframes scale {
+    100% {
+        transform: scale(1);
+    }
+}
+
+.ending-wrapper>.good-end {
+    font-family: 'ending';
+    text-shadow:
+        1px 1px 0px #161919,
+        2px 2px 0px #161919,
+        3px 3px 0px #161919,
+        4px 4px 0px #161919,
+        5px 5px 0px #161919,
+        6px 6px 0px #161919,
+        7px 7px 0px #161919,
+        8px 8px 0px #161919,
+        9px 9px 0px #161919,
+        10px 10px 0px #161919,
+        11px 11px 0px #161919,
+        12px 12px 0px #161919;
+}
+
+.ending-wrapper>.bad-end {
+    font-family: 'chaos';
+    color: rgb(174, 20, 28);
+    text-shadow:
+        1px 1px 0px #161919,
+        2px 2px 0px #161919,
+        3px 3px 0px #161919,
+        4px 4px 0px #161919,
+        5px 5px 0px #161919,
+        6px 6px 0px #161919,
+        7px 7px 0px #161919,
+        8px 8px 0px #161919,
+        9px 9px 0px #161919,
+        10px 10px 0px #161919,
+        11px 11px 0px #161919,
+        12px 12px 0px #161919;
+}
+
+@keyframes fade-in {
+    100% {
+        opacity: 1;
+        filter: blur(0);
+    }
+}
 
 @keyframes moveRight {
     0% {

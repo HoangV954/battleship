@@ -197,7 +197,7 @@ const findNextCell = (hitArr, availArr) => {
 
     return surroundingCells;
 }
-export { iniPlayerBoard, iniComputerBoard, findShipIdx, getCells, getCellsCondition, resetHoverBoard, countOccurence, findMaxValues, compareDuplicate, findNextCell }
+export { iniPlayerBoard, iniComputerBoard, findShipIdx, getCells, getCellsCondition, resetHoverBoard, countOccurence, findMaxValues, compareDuplicate, findNextCell, generateBoard }
 
 
 

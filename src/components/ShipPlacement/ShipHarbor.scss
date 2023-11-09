@@ -5,12 +5,13 @@
     display: grid;
     grid-template-rows: repeat(10, 1fr);
     grid-template-columns: repeat(10, 1fr);
-    /*     background: url(../../assets/imgs/space-port1.jpg);
-    background-size: 125%;
-    background-position: center center;
-    background-repeat: no-repeat; */
+    background: url(../../assets/imgs/blackhole4.png);
+    background-size: 100%;
+    background-position: 50%;
+    background-repeat: no-repeat;
+
 
     svg {
-        fill: #7e99a7;
+        fill: rgb(166, 184, 108);
     }
 }

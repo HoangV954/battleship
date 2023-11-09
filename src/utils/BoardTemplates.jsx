@@ -7,10 +7,11 @@ const StyledGameContainer = styled.div.attrs({
     position: relative;
     width: 100%;
     height: auto;
-    grid-template: 1fr 7rem 40rem 1fr/ 1fr 1fr;
+    grid-template: 1fr 9rem 5rem 40rem 3rem/ 1fr 1fr;
     grid-template-areas:
         "logo logo"
         "text text"
+        "axis axis"
         "board board"
         "footer footer";
 `

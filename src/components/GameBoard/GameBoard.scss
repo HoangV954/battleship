@@ -18,7 +18,12 @@
         height: auto;
         justify-content: center;
         align-items: center;
+
+        p {
+            font-family: 'menu';
+        }
     }
+
 }
 
 .footer-bar {
@@ -33,6 +38,21 @@
     justify-content: center;
     align-items: center;
     position: relative;
+
+
+
+}
+
+.computer-board-container {
+    &:hover {
+        cursor: url(../../assets/imgs/sniper-297661.svg), pointer;
+    }
+
+    [class*='square-'] {
+        &:hover {
+            animation: blink 2s ease infinite;
+        }
+    }
 }
 
 // Cells style
@@ -47,18 +67,91 @@
     display: flex;
     justify-content: center;
     align-items: center;
+
+
 }
 
-.computer-wrapper,
-.harbor-wrapper {
-    opacity: 0;
-
-    &.fadeIn {
-        animation: fadeIn 5s 1s forwards;
+@keyframes blink {
+    0% {
+        background-color: rgb(38, 38, 209);
     }
 
-    &.fadeOut {
-        animation: fadeOut 5s forwards;
+    50% {
+        background-color: rgb(10, 10, 116);
+    }
+
+    100% {
+        background-color: rgb(38, 38, 209);
+    }
+}
+
+.axis-changer {
+    grid-area: axis;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+
+    &::after {
+        content: '';
+        position: absolute;
+        width: 10rem;
+        height: 5rem;
+        background: url(../../assets/imgs/Imperialis.png) center/cover no-repeat;
+        bottom: -100%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+
+    button {
+        width: 9rem;
+        height: 3rem;
+        align-self: center;
+        padding: 0.3rem 0.5rem;
+        margin-top: 2rem;
+
+        position: relative;
+        color: white;
+        border: none;
+        padding: 10px 0;
+
+        background: url(../../assets/imgs/btn-gold-bg.png);
+        background-size: cover;
+        background-repeat: no-repeat;
+        font-family: 'menu';
+        z-index: 99;
+        filter: grayscale(100%);
+        text-shadow: -1px -1px 0 rgba(0, 0, 0, .5);
+
+        &::before,
+        &::after {
+            content: '';
+            height: 100%;
+            width: 60%;
+            display: block;
+            position: absolute;
+            top: 0;
+            z-index: -2;
+        }
+
+        &::before {
+            background: url(../../assets/imgs/btn-gold-left.png);
+            left: -25%;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        &::after {
+            background: url(../../assets/imgs/btn-gold-right.png);
+            right: -25%;
+            height: 100%;
+            background-size: 100% 100%;
+            background-repeat: no-repeat;
+        }
+
+        &:hover {
+            filter: grayscale(0%);
+        }
     }
 }
 
@@ -93,15 +186,8 @@
 
 }
 
-.occupied {
-    background-color: rgba(224, 178, 92, 0.432);
-}
 
-.miss {
-    background-color: rgba(103, 88, 196, 0.742);
-}
-
+.miss,
 .sunk {
-    background-color: rgba(201, 22, 22, 0.742);
-    /* cursor: not-allowed; */
+    cursor: not-allowed;
 }
