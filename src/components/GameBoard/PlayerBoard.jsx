@@ -142,7 +142,7 @@ function PlayerBoard({ name, size, axis }) {
                                 onDrop={handleDrop}
                                 onDragOver={handleDragOver}
                                 onDragLeaveCapture={handleDragEnd}
-                                onDragLeave={handleDragEnd}
+
                                 key={square.key}
                                 data-x={square.x}
                                 data-y={square.y}

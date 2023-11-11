@@ -7,14 +7,14 @@ const StyledLoading = styled.div.attrs({
 width: 100vw;
 height: 100vh;
 display: flex;
-align-item: center;
-justtify-content: center
+align-items: center;
+justify-content: center
 `
 
 export default function Loading() {
     return (
         <StyledLoading>
-            <img src={loadingGif} width={'3 rem'} height={'3 rem'} alt="Loading..." />
+            <img src={loadingGif} width={'3rem'} height={'3rem'} alt="Loading..." />
         </StyledLoading>
     )
 }
