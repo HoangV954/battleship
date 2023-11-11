@@ -11,13 +11,11 @@ import giveUp from '../../assets/sound/button-deny.mp3';
 import evilLaugh from '../../assets/sound/evil-laugh.mp3';
 
 
-
-
 export default function Character({ char, index, choice, setAxis }) {
 
-    const { gameState, gameDispatch, resetGame } = useContext(GameContext);
-    const [playGiveUp] = useSound(giveUp, { volume: 0.4 })
-    const [playLaugh] = useSound(evilLaugh, { volume: 0.3 })
+    const { gameState, gameDispatch, resetGame, sound } = useContext(GameContext);
+    const [playGiveUp] = useSound(giveUp, { volume: sound ? 0.4 : 0 })
+    const [playLaugh] = useSound(evilLaugh, { volume: sound ? 0.3 : 0 })
 
     const handleGiveUp = () => {
         playGiveUp();

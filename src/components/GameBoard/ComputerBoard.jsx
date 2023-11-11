@@ -9,10 +9,10 @@ import lazer from '../../assets/sound/lazer-gun2.mp3';
 import explo from '../../assets/sound/explosion.mp3';
 
 function ComputerBoard({ name, size }) {
-    const { playerBoard, setPlayerBoard, setShipPlacement, computerBoard, setComputerBoard, compShipPlacement, setCompShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch } = useContext(GameContext);
+    const { playerBoard, setPlayerBoard, setShipPlacement, computerBoard, setComputerBoard, compShipPlacement, setCompShipPlacement, randomize, shipPlacementRandomize, gameState, gameDispatch, sound } = useContext(GameContext);
 
-    const [playShoot] = useSound(lazer, { volume: 0.3 });
-    const [playHit] = useSound(explo, { volume: 0.5 })
+    const [playShoot] = useSound(lazer, { volume: sound ? 0.3 : 0 });
+    const [playHit] = useSound(explo, { volume: sound ? 0.5 : 0 })
 
     const playerHitArrayRef = useRef(null);
     const hitArrayRef = useRef(null);
@@ -45,6 +45,7 @@ function ComputerBoard({ name, size }) {
     }, [gameState.playerHp, gameState.computerHp])
 
     const handleOnClick = (e) => {
+        e.stopPropagation();
         // ! Handle game loss/win
         if (gameState.gameEnded) {
             return null;
@@ -53,6 +54,10 @@ function ComputerBoard({ name, size }) {
         const targetClass = e.target.classList[0];
         const targetCellIndex = Number(targetClass.slice(7, targetClass.length));
         const clickedCell = computerBoard[targetCellIndex - 1];
+
+        if (clickedCell.isHit) {
+            return
+        }
 
         if (clickedCell.isOccupied === true) {
             playerHitArrayRef.current.push(clickedCell);
@@ -91,6 +96,9 @@ function ComputerBoard({ name, size }) {
         }
 
         gameDispatch(shootAIAction);
+        if (!clickedCell.isHit) {
+            handleAI()
+        }
     }
 
     const handleAI = () => {
@@ -193,7 +201,9 @@ function ComputerBoard({ name, size }) {
                                 key={square.key}
                                 data-x={square.x}
                                 data-y={square.y}
-                                onClick={gameState.gameStarted ? (e) => { handleOnClick(e); handleAI() } : null}
+                                onClick={gameState.gameStarted ? (e) => {
+                                    handleOnClick(e);
+                                } : null}
                             >
                                 {(square.isHit && !square.isOccupied) &&
                                     (<svg
@@ -203,7 +213,7 @@ function ComputerBoard({ name, size }) {
                                         xmlns='http://www.w3.org/2000/svg'
 
                                     >
-                                        <circle cx={8} cy={8} r={8} />
+                                        <circle cx={8} cy={8} r={8} onClick={(e) => e.stopPropagation()} />
                                     </svg>)
                                 }
                                 {(square.isHit && square.isOccupied) &&

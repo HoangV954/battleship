@@ -5,16 +5,16 @@ import { iniPlayerBoard, iniComputerBoard, generateBoard } from "../utils/gameHe
 
 const gameIniState = {
     playerName: '',
-    gameIntro: true,
+    gameIntro: false,
     gameSetup: false,
     gameStarted: false,
-    gameEnded: false,
+    gameEnded: true,
     giveUp: null,
     playerVictory: false,
     imperialEnd: false,
     chaosEnd: false,
-    playerHp: 12,
-    computerHp: 12,
+    playerHp: 17,
+    computerHp: 17,
     playerInventory: [...shipList],
     computerInventory: [...shipList],
     message: ''
@@ -179,6 +179,8 @@ function useGame() {
     const [grabbedCell, setGrabbedCell] = useState(0);
     const [shipLength, setShipLength] = useState(0);
     const [gameState, gameDispatch] = useReducer(gameReducer, gameIniState);
+    const [mute, setMute] = useState(false);
+    const [sound, setSound] = useState(true)
 
     const resetGame = (resetType) => {
         setHarbor([...shipList]);
@@ -287,7 +289,7 @@ function useGame() {
         return newCompBoard
     }
 
-    return { harbor, setHarbor, playerBoard, setPlayerBoard, computerBoard, setComputerBoard, shipPlacement, setShipPlacement, compShipPlacement, setCompShipPlacement, grabbedCell, setGrabbedCell, shipLength, setShipLength, randomize, shipPlacementRandomize, gameState, gameDispatch, resetGame }
+    return { harbor, setHarbor, playerBoard, setPlayerBoard, computerBoard, setComputerBoard, shipPlacement, setShipPlacement, compShipPlacement, setCompShipPlacement, grabbedCell, setGrabbedCell, shipLength, setShipLength, randomize, shipPlacementRandomize, gameState, gameDispatch, resetGame, sound, setSound, mute, setMute }
 }
 
 export default useGame;

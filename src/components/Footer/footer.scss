@@ -1,0 +1,48 @@
+.footer-bar {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 3rem;
+    gap: 0.5rem;
+    white-space: nowrap;
+    overflow: hidden;
+    animation: scroll 10s linear infinite;
+
+    &__text {
+        font-family: 'menu';
+    }
+
+    a {
+        display: flex;
+        width: 2rem;
+        height: 2rem;
+        align-items: center;
+        justify-content: center;
+
+        svg {
+            width: 100%;
+            height: 100%;
+        }
+    }
+}
+
+@keyframes scroll {
+    0% {
+        transform: translateX(100%);
+    }
+
+    100% {
+        transform: translateX(-100%);
+    }
+}
+
+.intro-wrapper {
+    position: relative;
+
+    .footer-bar {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        animation: none;
+    }
+}

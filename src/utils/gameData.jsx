@@ -1,6 +1,8 @@
-import Carrier from "../components/Ships/ShipImages/Carrier";
+import Dreadnought from "../components/Ships/ShipImages/Dreadnought";
 import Battleship from "../components/Ships/ShipImages/Battleship";
 import Destroyer from "../components/Ships/ShipImages/Destroyer";
+import Interceptor from "../components/Ships/ShipImages/Interceptor";
+import Freighter from "../components/Ships/ShipImages/Freighter";
 import horus from '../assets/imgs/horus-lupercal.png';
 import roboute from '../assets/imgs/guilliman.png';
 import blood from '../assets/imgs/blood-angel-port.png';
@@ -10,7 +12,7 @@ import uniquid from "uniqid";
 
 const shipList = [
     {
-        type: 'carrier',
+        type: 'dreadnought',
         key: uniquid(),
         length: 5,
         hp: 5,
@@ -18,13 +20,13 @@ const shipList = [
         defaultX: 2,
         defaultY: 2,
         subX: 3,
-        subY: 2,
+        subY: 3,
         draggable: false,
         axis: 'x',
         display: 'player',
         render: (props) => {
             return (
-                <Carrier {...props}></Carrier>
+                <Dreadnought {...props}></Dreadnought>
             )
         }
     },
@@ -37,7 +39,7 @@ const shipList = [
         defaultX: 5,
         defaultY: 2,
         subX: 2,
-        subY: 4,
+        subY: 5,
         draggable: false,
         axis: 'x',
         display: 'player',
@@ -56,13 +58,51 @@ const shipList = [
         defaultX: 8,
         defaultY: 2,
         subX: 7,
-        subY: 4,
+        subY: 5,
         draggable: false,
         axis: 'x',
         display: 'player',
         render: (props) => {
             return (
                 <Destroyer {...props}></Destroyer>
+            )
+        }
+    },
+    {
+        type: 'interceptor',
+        key: uniquid(),
+        length: 3,
+        hp: 3,
+        isSunk: false,
+        defaultX: 4,
+        defaultY: 7,
+        subX: 3,
+        subY: 7,
+        draggable: false,
+        axis: 'x',
+        display: 'player',
+        render: (props) => {
+            return (
+                <Interceptor {...props}></Interceptor>
+            )
+        }
+    },
+    {
+        type: 'freighter',
+        key: uniquid(),
+        length: 2,
+        hp: 2,
+        isSunk: false,
+        defaultX: 6,
+        defaultY: 7,
+        subX: 7,
+        subY: 7,
+        draggable: false,
+        axis: 'x',
+        display: 'player',
+        render: (props) => {
+            return (
+                <Freighter {...props}></Freighter>
             )
         }
     }

@@ -8,13 +8,14 @@ import useSound from 'use-sound';
 import introTheme from '../../assets/sound/menu-theme.mp3';
 import btnClick from '../../assets/sound/button-confirm.mp3';
 import ReactHowler from 'react-howler';
+import Footer from "../Footer/Footer";
 
 export default function Intro() {
-    const { gameDispatch } = useContext(GameContext);
+    const { gameDispatch, sound } = useContext(GameContext);
     const [inputError, setInputError] = useState('');
     // Empty string = falsy
     const [inputVal, setInputVal] = useState('');
-    const [playBtnConfirm] = useSound(btnClick, { volume: 0.5 });
+    const [playBtnConfirm] = useSound(btnClick, { volume: sound ? 0.5 : 0 });
 
     const handleChange = (e) => {
         setInputVal(e.target.value);
@@ -42,6 +43,7 @@ export default function Intro() {
             <ReactHowler
                 src={introTheme}
                 playing={true}
+                volume={sound ? 0.9 : 0}
                 loop={true}
             />
             <Logo />
@@ -63,6 +65,7 @@ export default function Intro() {
                 </form>
             </motion.div>
             {inputError && (<p className="intro__error">{inputError}</p>)}
+            <Footer></Footer>
         </div>
     )
 }

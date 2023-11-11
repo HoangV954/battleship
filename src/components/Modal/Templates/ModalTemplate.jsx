@@ -1,12 +1,13 @@
 import styled from 'styled-components';
 import textBgAlly from '../../../assets/imgs/text-bg-ally.png';
 import textBgEnemy from '../../../assets/imgs/text-bg-enemy.png';
-import loseBg from '../../../assets/imgs/chaos-won.jpg';
-import winBg from '../../../assets/imgs/imperial-won2.jpg';
-import imperiumEnd from '../../../assets/imgs/imperium-end.jpg';
-import chaosEnd from '../../../assets/imgs/chaos-end.jpg';
+import loseBg from '../../../assets/imgs/chaos-won.webp';
+import winBg from '../../../assets/imgs/imperial-won2.webp';
+import imperiumEnd from '../../../assets/imgs/imperium-end.webp';
+import chaosEnd from '../../../assets/imgs/chaos-end.webp';
+import { motion } from 'framer-motion';
 
-const ModalContainer = styled.div.attrs({
+const ModalContainer = styled(motion.div).attrs({
     className: 'modal-wrapper'
 }).withConfig({
     shouldForwardProp: (prop) => !['victory', 'goodend', 'badend'].includes(prop),
@@ -25,7 +26,7 @@ const ModalContainer = styled.div.attrs({
     background-repeat: no-repeat;
 `
 
-const Ending = styled.div.attrs({
+const Ending = styled(motion.div).attrs({
     className: 'ending-wrapper'
 }).withConfig({
     shouldForwardProp: (prop) => !['goodend', 'badend'].includes(prop),
@@ -43,7 +44,7 @@ const CharacterContainer = styled.div.attrs((props) => ({
     shouldForwardProp: (prop) => !['index', 'faction'].includes(prop),
 })`
 position: relative;
-animation: fadeIn 5s ${(props) => props.index * 2.5}s forwards;
+animation: fadeIn 5s ${(props) => props.index * 3.2}s forwards;
 opacity: 0;
 `
 
@@ -59,7 +60,7 @@ width: 31.25rem;
 min-height: 7rem;
 max-height: auto;
 opacity: 0;
-animation: ${(props) => props.faction === 'protag' ? `moveRight 5s ${props.index * 2.5}s` : `moveLeft 5s ${props.index * 2.5}s`} forwards;
+animation: ${(props) => props.faction === 'protag' ? `moveRight 5s ${props.index * 3.2}s` : `moveLeft 5s ${props.index * 3.2}s`} forwards;
 background: ${(props) => props.faction === 'protag'
         ? `url(${textBgAlly})`
         : `linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.3)), url(${textBgEnemy})`

@@ -1,9 +1,12 @@
 import PropTypes from 'prop-types';
 import btnHover from '../assets/sound/metal-slam.mp3';
 import useSound from 'use-sound';
+import { useContext } from 'react';
+import GameContext from '../hooks/GameContext';
 
 export default function Button({ name, onClick, textContent }) {
-    const [playBtnHover] = useSound(btnHover, { volume: 0.5 })
+    const { sound } = useContext(GameContext);
+    const [playBtnHover] = useSound(btnHover, { volume: sound ? 0.4 : 0 })
     const handleMouseEnter = () => {
         playBtnHover();
     }

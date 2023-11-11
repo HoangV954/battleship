@@ -19,6 +19,7 @@
     "react-dom": "^18.2.0",
     "react-howler": "^5.2.0",
     "react-icons": "^4.11.0",
+    "react-loadable": "^5.5.0",
     "react-modal": "^3.16.1",
     "react-random-reveal": "^2.0.0",
     "react-simple-typewriter": "^5.0.1",

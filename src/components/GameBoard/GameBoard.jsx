@@ -11,16 +11,18 @@ import Logo from '../Logo/Logo';
 import Announcement from '../Announcement/Announcement';
 import Modal from '../Modal/Modal';
 import Intro from '../Intro/Intro';
+import Audio from '../Audio/Audio';
 import { AnimatePresence, motion } from 'framer-motion';
 import useSound from 'use-sound';
 import ReactHowler from 'react-howler';
 import mainTheme from '../../assets/sound/main-theme.mp3';
-import announcerSound from '../../assets/sound/announcement.mp3'
+import announcerSound from '../../assets/sound/announcement.mp3';
+import Footer from '../Footer/Footer';
 
 export default function GameBoard({ axis, setAxis }) {
 
-    const { gameState } = useContext(GameContext);
-    const [playAnnounce] = useSound(announcerSound, { volume: 0.5 });
+    const { gameState, sound } = useContext(GameContext);
+    const [playAnnounce] = useSound(announcerSound, { volume: sound ? 0.5 : 0 });
 
     useEffect(() => {
         playAnnounce();
@@ -46,6 +48,7 @@ export default function GameBoard({ axis, setAxis }) {
                         exit={{ opacity: 0 }}
                         transition={{ duration: 0.5 }}
                         key="intro">
+                        <Audio></Audio>
                         <Intro></Intro>
                     </motion.div>)
                 }
@@ -55,10 +58,12 @@ export default function GameBoard({ axis, setAxis }) {
                     exit={{ opacity: 0 }}
                     transition={{ duration: 0.5 }}
                     key="game">
+                    <Audio></Audio>
                     <StyledGameContainer>
                         <ReactHowler
                             src={mainTheme}
                             playing={true}
+                            volume={sound ? 0.7 : 0}
                             loop={true}
                         />
                         <Logo />
@@ -111,14 +116,20 @@ export default function GameBoard({ axis, setAxis }) {
                                 }
                             </AnimatePresence>
                         </div>
-                        <div className='footer-bar'>Footer
-                        </div>
+                        <Footer></Footer>
                     </StyledGameContainer>
                 </motion.div>)
                 }
                 {
                     gameState.gameEnded && (
-                        <Modal setAxis={setAxis}></Modal>
+                        <motion.div
+                            className="modal"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 3 }}>
+                            <Modal setAxis={setAxis}></Modal>
+                        </motion.div>
                     )
                 }
             </AnimatePresence>
