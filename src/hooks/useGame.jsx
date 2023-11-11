@@ -5,10 +5,10 @@ import { iniPlayerBoard, iniComputerBoard, generateBoard } from "../utils/gameHe
 
 const gameIniState = {
     playerName: '',
-    gameIntro: false,
+    gameIntro: true,
     gameSetup: false,
     gameStarted: false,
-    gameEnded: true,
+    gameEnded: false,
     giveUp: null,
     playerVictory: false,
     imperialEnd: false,
