@@ -2,7 +2,7 @@ import { CharacterContainer, TextBox, NamePlate } from './Templates/ModalTemplat
 import PropTypes from 'prop-types';
 import Typewriter from 'typewriter-effect';
 import { RandomReveal } from "react-random-reveal";
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import GameContext from '../../hooks/GameContext';
 import Rune from './Templates/RuneText';
 import Button from '../../utils/Button';
@@ -13,21 +13,26 @@ import evilLaugh from '../../assets/sound/evil-laugh.mp3';
 
 export default function Character({ char, index, choice, setAxis }) {
 
+    const [isButtonClicked, setButtonClicked] = useState(false);
+
     const { gameState, gameDispatch, resetGame, sound } = useContext(GameContext);
     const [playGiveUp] = useSound(giveUp, { volume: sound ? 0.4 : 0 })
     const [playLaugh] = useSound(evilLaugh, { volume: sound ? 0.3 : 0 })
 
     const handleGiveUp = () => {
-        playGiveUp();
+        if (!isButtonClicked) {
 
-        gameDispatch({ type: 'GIVE_UP' })
-        setTimeout(() => {
+            setButtonClicked(true)
+            playGiveUp();
 
-            gameDispatch({ type: 'SET_ENDING' })
-            if (!gameState.playerVictory) {
-                playLaugh();
-            }
-        }, 8000)
+            gameDispatch({ type: 'GIVE_UP' })
+            setTimeout(() => {
+                gameDispatch({ type: 'SET_ENDING' })
+                if (!gameState.playerVictory) {
+                    playLaugh();
+                }
+            }, 8000)
+        }
     }
 
     const handleReset = (resetType) => {

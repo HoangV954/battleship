@@ -8,9 +8,9 @@ import Button from '../../utils/Button';
 import { StyledGameContainer } from '../../utils/BoardTemplates';
 import ShipHarbor from '../ShipPlacement/ShipHarbor';
 import Logo from '../Logo/Logo';
-/* import Announcement from '../Announcement/Announcement'; */
-/* import Modal from '../Modal/Modal'; */
-/* import Intro from '../Intro/Intro'; */
+import Announcement from '../Announcement/Announcement';
+import Modal from '../Modal/Modal';
+import Intro from '../Intro/Intro';
 import Audio from '../Audio/Audio';
 import { AnimatePresence, motion } from 'framer-motion';
 import useSound from 'use-sound';
@@ -18,14 +18,6 @@ import ReactHowler from 'react-howler';
 import mainTheme from '../../assets/sound/main-theme.mp3';
 import announcerSound from '../../assets/sound/announcement.mp3';
 import Footer from '../Footer/Footer';
-import Loading from '../Loading/Loading';
-import { Suspense } from "react";
-import { lazyWithPreload } from "react-lazy-with-preload";
-
-const Intro = lazyWithPreload(() => import("../Intro/Intro"));
-const Modal = lazyWithPreload(() => import("../Modal/Modal"));
-const Announcement = lazyWithPreload(() => import("../Announcement/Announcement"));
-
 
 export default function GameBoard({ axis, setAxis }) {
 
@@ -57,9 +49,7 @@ export default function GameBoard({ axis, setAxis }) {
                         transition={{ duration: 0.5 }}
                         key="intro">
                         <Audio></Audio>
-                        <Suspense fallback={<Loading />}>
-                            <Intro></Intro>
-                        </Suspense>
+                        <Intro></Intro>
                     </motion.div>)
                 }
                 {(gameState.gameStarted || gameState.gameSetup) && (<motion.div
@@ -77,9 +67,7 @@ export default function GameBoard({ axis, setAxis }) {
                             loop={true}
                         />
                         <Logo />
-                        <Suspense fallback={<Loading />}>
-                            <Announcement />
-                        </Suspense>
+                        <Announcement />
                         {gameState.gameSetup && <motion.div
                             className="axis-changer"
                             initial={{ opacity: 0 }}
@@ -140,9 +128,7 @@ export default function GameBoard({ axis, setAxis }) {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             transition={{ duration: 3 }}>
-                            <Suspense fallback={<Loading />}>
-                                <Modal setAxis={setAxis}></Modal>
-                            </Suspense>
+                            <Modal setAxis={setAxis}></Modal>
                         </motion.div>
                     )
                 }
